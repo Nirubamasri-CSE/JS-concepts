@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript Events, Custom Events & OOP</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+  section { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+  h2 { color: #6C72FF; }
+  input, button { margin: 5px 0; padding: 5px; }
+  #drag, #drop, #touchArea, #animBox { margin: 10px 0; padding: 10px; text-align: center; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h1>JavaScript Demo: Events + Custom Events + OOP</h1>
+<!-- <p>Check the <b>Output area</b> and <b>Console</b> (F12) for logs.</p> -->
+
+<!-- EVENTS SECTION -->
+<section>
+  <h2>1. All JavaScript Events</h2>
+  <button id="btn">Click / Hover / Right Click</button>
+  <input id="inputBox" type="text" placeholder="Type here">
+  <form id="myForm">
+    <input id="formInput" type="text" placeholder="Form input">
+    <button type="submit">Submit</button>
+    <button type="reset">Reset</button>
+  </form>
+  <div id="drag" draggable="true" style="width:100px;height:50px;background:lightblue;">Drag Me</div>
+  <div id="drop" style="width:200px;height:100px;border:2px dashed gray;">Drop Here</div>
+  <div id="touchArea" style="width:150px;height:150px;background:lightgreen;">Touch / Pointer Area</div>
+  <audio id="audio" controls>
+    <source src="https://www.w3schools.com/html/horse.mp3" type="audio/mpeg">
+  </audio>
+  <div id="animBox" style="width:50px;height:50px;background:red;animation: move 2s infinite;"></div>
+</section>
+
+<style>
+@keyframes move {
+  0% {transform: translateX(0);}
+  50% {transform: translateX(100px);}
+  100% {transform: translateX(0);}
+}
+</style>
+
+<!-- CUSTOM EVENT SECTION -->
+<section>
+  <h2>2. Custom Events</h2>
+  <button id="customBtn">Trigger Custom Event</button>
+  <p id="customOutput"></p>
+</section>
+
+<!-- OOP SECTION -->
+<section>
+  <h2>3. JavaScript OOP Concepts</h2>
+  <button id="oopBtn">Run OOP Demo</button>
+  <pre id="oopOutput"></pre>
+</section>
+
+<p id="output"></p>
+
+<script>
+// ------------------ Common Event Handler ------------------
+function handleEvent(e) {
+  let out = document.getElementById("output");
+  out.innerText = `Event: ${e.type} on element: #${e.target.id || e.target.tagName}`;
+  console.log(e.type, "on", e.target);
+}
+
+// ------------------ All Events ------------------
+// Mouse
+let btn = document.getElementById("btn");
+["click","dblclick","mousedown","mouseup","mousemove","mouseover","mouseout","mouseenter","mouseleave","contextmenu"]
+.forEach(ev => btn.addEventListener(ev, handleEvent));
+
+// Keyboard
+let inputBox = document.getElementById("inputBox");
+["keydown","keypress","keyup"].forEach(ev => inputBox.addEventListener(ev, handleEvent));
+
+// Form
+let myForm = document.getElementById("myForm");
+let formInput = document.getElementById("formInput");
+["input","change","focus","blur","invalid"].forEach(ev => formInput.addEventListener(ev, handleEvent));
+["submit","reset"].forEach(ev => myForm.addEventListener(ev, e => { e.preventDefault(); handleEvent(e); }));
+
+// Window / Document
+window.addEventListener("load", handleEvent);
+window.addEventListener("unload", handleEvent);
+window.addEventListener("resize", handleEvent);
+window.addEventListener("scroll", handleEvent);
+window.addEventListener("beforeunload", handleEvent);
+document.addEventListener("DOMContentLoaded", handleEvent);
+window.addEventListener("error", handleEvent);
+
+// Clipboard
+["copy","cut","paste"].forEach(ev => inputBox.addEventListener(ev, handleEvent));
+
+// Drag & Drop
+let drag = document.getElementById("drag");
+let drop = document.getElementById("drop");
+["drag","dragstart","dragend"].forEach(ev => drag.addEventListener(ev, handleEvent));
+["dragenter","dragleave","dragover","drop"].forEach(ev => drop.addEventListener(ev, e => {
+    if(ev === "dragover") e.preventDefault();
+    handleEvent(e);
+}));
+
+// Touch & Pointer
+let touchArea = document.getElementById("touchArea");
+["touchstart","touchmove","touchend","touchcancel"].forEach(ev => touchArea.addEventListener(ev, handleEvent));
+["pointerdown","pointerup","pointermove","pointerenter","pointerleave","pointercancel"].forEach(ev => touchArea.addEventListener(ev, handleEvent));
+
+// Media
+let audio = document.getElementById("audio");
+["play","pause","ended","volumechange","timeupdate","progress","waiting"].forEach(ev => audio.addEventListener(ev, handleEvent));
+
+// Animation & Transition
+let animBox = document.getElementById("animBox");
+["animationstart","animationend","animationiteration"].forEach(ev => animBox.addEventListener(ev, handleEvent));
+["transitionstart","transitionend","transitionrun","transitioncancel"].forEach(ev => animBox.addEventListener(ev, handleEvent));
+
+// Special
+window.addEventListener("online", handleEvent);
+window.addEventListener("offline", handleEvent);
+document.addEventListener("visibilitychange", handleEvent);
+window.addEventListener("wheel", handleEvent);
+
+// ------------------ Custom Events ------------------
+let customBtn = document.getElementById("customBtn");
+let customOutput = document.getElementById("customOutput");
+
+// Create custom event
+let greetEvent = new CustomEvent("greetEvent", {
+  detail: { message: "Hello from Custom Event!", time: new Date() }
+});
+
+// Listen for custom event
+document.addEventListener("greetEvent", function(e) {
+  customOutput.innerText = `Custom Event Triggered → ${e.detail.message} at ${e.detail.time.toLocaleTimeString()}`;
+  console.log("Custom Event:", e.detail);
+});
+
+// Trigger custom event on button click
+customBtn.addEventListener("click", function() {
+  document.dispatchEvent(greetEvent);
+});
+
+// ------------------ OOP Concepts ------------------
+class Person {
+  constructor(name) {
+    this.name = name; // encapsulation
+  }
+  greet() {
+    return `Hello, my name is ${this.name}`;
+  }
+}
+
+class Employee extends Person {
+  constructor(name, role) {
+    super(name);
+    this.role = role;
+  }
+  greet() {
+    return `${super.greet()} and I work as a ${this.role}`; // method overriding
+  }
+}
+
+let oopBtn = document.getElementById("oopBtn");
+let oopOutput = document.getElementById("oopOutput");
+
+oopBtn.addEventListener("click", function() {
+  let p = new Person("John");
+  let e = new Employee("Alice", "Developer");
+
+  oopOutput.textContent = [
+    p.greet(),
+    e.greet(),
+    "Inheritance: Employee extends Person",
+    "Encapsulation: name stored privately in object",
+    "Polymorphism: greet() behaves differently"
+  ].join("\n");
+
+  console.log("OOP Demo:", p, e);
+});
+</script>
+
+</body>
+</html>
