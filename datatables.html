@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript DataTables Demo</title>
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.3/css/responsive.dataTables.min.css">
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f8ff;
+    padding: 30px;
+  }
+  h1 {
+    color: #6C72FF;
+  }
+  table.dataTable {
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  a.back {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #6C72FF;
+    text-decoration: none;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back">⬅ Back to JS Events & OOP Demo</a>
+
+<h1>JavaScript DataTables Example</h1>
+<p>This page demonstrates DataTables with sorting, searching, pagination, and export options.</p>
+
+<table id="employeeTable" class="display nowrap" style="width:100%">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Position</th>
+      <th>Office</th>
+      <th>Age</th>
+      <th>Start Date</th>
+      <th>Salary</th>
+    </tr>
+  </thead>
+</table>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.3/js/dataTables.responsive.min.js"></script>
+
+<script>
+$(document).ready(function() {
+  $('#employeeTable').DataTable({
+    ajax: 'https://raw.githubusercontent.com/l-lin/angular-datatables/master/demo/src/data/data.json',
+    columns: [
+      { data: 'name' },
+      { data: 'position' },
+      { data: 'office' },
+      { data: 'age' },
+      { data: 'start_date' },
+      { data: 'salary' }
+    ],
+    responsive: true,
+    pageLength: 5,
+    lengthMenu: [5, 10, 25, 50],
+    order: [[3, 'asc']],
+    dom: 'Bfrtip',
+    buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+    language: {
+      search: "🔍 Search:",
+      lengthMenu: "Show _MENU_ entries per page",
+      info: "Showing _START_ to _END_ of _TOTAL_ entries"
+    },
+    createdRow: function(row, data) {
+      if (data.age > 60) $(row).css('background-color', '#ffecec');
+    }
+  });
+});
+</script>
+
+</body>
+</html>
