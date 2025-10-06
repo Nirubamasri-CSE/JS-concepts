@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS</title>
+
+<!-- Styles -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.3/css/responsive.dataTables.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+<style>
+body { font-family: "Poppins", sans-serif; background: #f8f9ff; padding: 30px; color: #212C4D; }
+h2 { color: #6C72FF; margin-top: 40px; }
+section { margin-bottom: 50px; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+label { font-weight: bold; margin-right: 10px; }
+input[type="date"] { padding: 6px 10px; border-radius: 5px; border: 1px solid #ccc; }
+#chart, #leafletMap { width: 100%; height: 400px; margin-top: 20px; border-radius: 10px; }
+table { width: 100%; margin-top: 20px; border-radius: 10px; overflow: hidden; }
+ul { padding-left: 20px; }
+#filteredTableSection { display: none; } /* hidden until date selected */
+
+/* ================= FILTERED TABLE STYLES ================= */
+#filteredTableSection table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #ccc;
+}
+
+#filteredTableSection th,
+#filteredTableSection td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+#filteredTableSection th {
+  background-color: #6C72FF;
+  color: white;
+}
+
+#filteredTableSection tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+</style>
+</head>
+<body>
+
+<h1>📚 JS Demo: Full Feature Integration</h1>
+
+<!-- DATA TABLES FIRST -->
+<section>
+  <h2>1️⃣ Student Records Table</h2>
+  <table id="studentTable" class="display nowrap">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Course</th>
+        <th>Department</th>
+        <th>Grade</th>
+        <th>Joined Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>101</td><td>Niru</td><td>B.E CSE</td><td>Engineering</td><td>A+</td><td>2021-10-25</td></tr>
+      <tr><td>102</td><td>Ravi Kumar</td><td>BBA</td><td>Business</td><td>B+</td><td>2020-07-12</td></tr>
+      <tr><td>103</td><td>Emily</td><td>B.Com</td><td>Commerce</td><td>A+</td><td>2022-01-09</td></tr>
+      <tr><td>104</td><td>John</td><td>B.Tech Mechanical</td><td>Engineering</td><td>B</td><td>2019-06-20</td></tr>
+      <tr><td>105</td><td>Priya</td><td>B.Sc Mathematics</td><td>Science</td><td>A</td><td>2021-09-18</td></tr>
+      <tr><td>106</td><td>Michael</td><td>B.A English</td><td>Arts</td><td>B+</td><td>2020-07-12</td></tr>
+      <tr><td>107</td><td>Fatima</td><td>B.Tech IT</td><td>Engineering</td><td>A+</td><td>2022-04-30</td></tr>
+      <tr><td>108</td><td>Karan</td><td>B.Sc Physics</td><td>Science</td><td>A</td><td>2021-11-10</td></tr>
+      <tr><td>109</td><td>Sophia</td><td>B.Com</td><td>Commerce</td><td>B+</td><td>2019-08-22</td></tr>
+      <tr><td>110</td><td>Daniel</td><td>B.Tech ECE</td><td>Engineering</td><td>A</td><td>2022-02-14</td></tr>
+      <tr><td>111</td><td>Aarav</td><td>B.Tech Civil</td><td>Engineering</td><td>B</td><td>2020-10-05</td></tr>
+      <tr><td>112</td><td>Meera</td><td>B.Sc Chemistry</td><td>Science</td><td>A+</td><td>2021-07-21</td></tr>
+      <tr><td>113</td><td>Arjun</td><td>BBA</td><td>Business</td><td>B+</td><td>2020-07-12</td></tr>
+      <tr><td>114</td><td>Sana</td><td>B.A History</td><td>Arts</td><td>A</td><td>2022-03-11</td></tr>
+      <tr><td>115</td><td>Vikram</td><td>B.Tech EEE</td><td>Engineering</td><td>B+</td><td>2020-05-17</td></tr>
+      <tr><td>116</td><td>Ananya</td><td>B.Sc Zoology</td><td>Science</td><td>A+</td><td>2021-07-21</td></tr>
+      <tr><td>117</td><td>Rohan</td><td>B.Com</td><td>Commerce</td><td>B</td><td>2019-11-19</td></tr>
+      <tr><td>118</td><td>Isha</td><td>B.Tech CSE</td><td>Engineering</td><td>A</td><td>2022-01-28</td></tr>
+      <tr><td>119</td><td>Krishna</td><td>B.Sc Statistics</td><td>Science</td><td>B+</td><td>2020-07-12</td></tr>
+      <tr><td>120</td><td>Shreya</td><td>B.A Psychology</td><td>Arts</td><td>A</td><td>2021-06-14</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- DATE PICKER -->
+<section>
+  <h2>2️⃣ Date Picker (Filter Students by Joined Date)</h2>
+  <label for="myDate">Select a Date:</label>
+  <input type="date" id="myDate">
+  <p id="dateOutput">You selected: None</p>
+</section>
+
+<!-- FILTERED TABLE -->
+<section id="filteredTableSection">
+  <h2>📅 Students Joined on Selected Date</h2>
+  <table id="filteredTable" class="display nowrap">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Course</th>
+        <th>Department</th>
+        <th>Grade</th>
+        <th>Joined Date</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<!-- ECHARTS -->
+<section>
+  <h2>3️⃣ ECharts Example (Student Grades)</h2>
+  <div id="chart"></div>
+</section>
+
+<!-- LEAFLET MAP -->
+<section>
+  <h2>4️⃣ Leaflet JS: Major Cities Example</h2>
+  <div id="leafletMap"></div>
+</section>
+
+<!-- JAVASCRIPT MAP -->
+<section>
+  <h2>5️⃣ JavaScript Map Example</h2>
+  <ul id="mapOutput"></ul>
+</section>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.3/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+window.onload = function() {
+  /* ================== DATA TABLES ================== */
+  const table = $('#studentTable').DataTable({
+    responsive: true,
+    pageLength: 5,
+    lengthMenu: [5, 10, 20],
+    dom: 'Bfrtip',
+    buttons: [
+      { extend: 'copyHtml5', text: '📋 Copy' },
+      { extend: 'excelHtml5', text: '📊 Export Excel' },
+      { extend: 'pdfHtml5', text: '📄 Export PDF' },
+      { extend: 'print', text: '🖨️ Print' }
+    ],
+    order: [[4, 'desc']],
+    createdRow: function(row, data) {
+      if (data[4] === 'A+' || data[4] === 'A') $(row).css('background-color', '#eaf3ff');
+    }
+  });
+
+  /* ================== DATE PICKER FILTER ================== */
+  const dateInput = document.getElementById("myDate");
+  const dateOutput = document.getElementById("dateOutput");
+  const filteredSection = document.getElementById("filteredTableSection");
+  const filteredBody = document.querySelector("#filteredTable tbody");
+
+  dateInput.addEventListener("change", function() {
+    const selectedDate = this.value;
+    dateOutput.textContent = "You selected: " + selectedDate;
+
+    // Show section
+    filteredSection.style.display = "block";
+    filteredBody.innerHTML = "";
+
+    // Get data from DataTable
+    const allData = table.rows().data().toArray();
+
+    // Filter by date
+    const filteredData = allData.filter(row => row[5] === selectedDate);
+
+    if (filteredData.length === 0) {
+      filteredBody.innerHTML = "<tr><td colspan='6' style='text-align:center;'>No students joined on this date.</td></tr>";
+    } else {
+      filteredData.forEach(row => {
+        const tr = document.createElement("tr");
+        row.forEach(td => {
+          const cell = document.createElement("td");
+          cell.textContent = td;
+          tr.appendChild(cell);
+        });
+        filteredBody.appendChild(tr);
+      });
+    }
+  });
+
+  /* ================== ECHARTS ================== */
+  const chartDom = document.getElementById('chart');
+  const myChart = echarts.init(chartDom);
+  const option = {
+    title: { text: 'Student Grades', left: 'center' },
+    tooltip: { trigger: 'item' },
+    xAxis: { type: 'category', data: ['Niru','Ravi','Emily','John','Priya','Michael','Fatima','Karan','Sophia','Daniel'], axisLabel: { rotate: 45 } },
+    yAxis: { type: 'value', name: 'Grade Points' },
+    series: [{ name: 'Grade', type: 'bar', data: [10,8,10,7,9,8,10,9,8,9], itemStyle: { color: '#6C72FF' } }]
+  };
+  myChart.setOption(option);
+
+  /* ================== LEAFLET MAP ================== */
+  const leafletMap = L.map('leafletMap').setView([20.5937, 78.9629], 5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(leafletMap);
+
+  const cities = [
+    { name: "New Delhi", coords: [28.6139, 77.2090], color: "red" },
+    { name: "Mumbai", coords: [19.0760, 72.8777], color: "blue" },
+    { name: "Bengaluru", coords: [12.9716, 77.5946], color: "green" },
+    { name: "Chennai", coords: [13.0827, 80.2707], color: "orange" },
+    { name: "Kolkata", coords: [22.5726, 88.3639], color: "purple" }
+  ];
+
+  cities.forEach(city => {
+    L.circleMarker(city.coords, {
+      radius: 10,
+      color: city.color,
+      fillColor: city.color,
+      fillOpacity: 0.6
+    }).addTo(leafletMap).bindPopup(`<b>${city.name}</b>`);
+  });
+
+  /* ================== JAVASCRIPT MAP ================== */
+  const jsMapOutput = document.getElementById('mapOutput');
+  const students = [
+    { name: "Niru", id: 101 },
+    { name: "Ravi Kumar", id: 102 },
+    { name: "Emily Smith", id: 103 },
+    { name: "John Lee", id: 104 },
+    { name: "Priya Sharma", id: 105 }
+  ];
+
+  jsMapOutput.innerHTML = '';
+  students.forEach(student => {
+    const li = document.createElement('li');
+    li.textContent = `${student.name} → Student ID: ${student.id}`;
+    jsMapOutput.appendChild(li);
+  });
+};
+</script>
+
+</body>
+</html>
