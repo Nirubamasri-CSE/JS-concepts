@@ -203,15 +203,28 @@ window.onload = function() {
 
   /* ================== ECHARTS ================== */
   const chartDom = document.getElementById('chart');
-  const myChart = echarts.init(chartDom);
-  const option = {
-    title: { text: 'Student Grades', left: 'center' },
-    tooltip: { trigger: 'item' },
-    xAxis: { type: 'category', data: ['Niru','Ravi','Emily','John','Priya','Michael','Fatima','Karan','Sophia','Daniel'], axisLabel: { rotate: 45 } },
-    yAxis: { type: 'value', name: 'Grade Points' },
-    series: [{ name: 'Grade', type: 'bar', data: [10,8,10,7,9,8,10,9,8,9], itemStyle: { color: '#6C72FF' } }]
-  };
-  myChart.setOption(option);
+const myChart = echarts.init(chartDom);
+const option = {
+  title: { text: 'Student Grades', left: 'center' },
+  tooltip: { trigger: 'item' },
+  xAxis: { 
+    type: 'category', 
+    data: [
+      'Niru','Ravi','Emily','John','Priya','Michael','Fatima','Karan','Sophia','Daniel',
+      'Aarav','Meera','Arjun','Sana','Vikram','Ananya','Rohan','Isha','Krishna','Shreya'
+    ], 
+    axisLabel: { rotate: 45 } 
+  },
+  yAxis: { type: 'value', name: 'Grade Points' },
+  series: [{ 
+    name: 'Grade', 
+    type: 'bar', 
+    data: [10,8,10,7,9,8,10,9,8,9,7,10,8,9,8,10,7,9,8,9], 
+    itemStyle: { color: '#6C72FF' } 
+  }]
+};
+myChart.setOption(option);
+
 
   /* ================== LEAFLET MAP ================== */
   const leafletMap = L.map('leafletMap').setView([20.5937, 78.9629], 5);
